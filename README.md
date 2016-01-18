@@ -6,7 +6,7 @@ Install using composer:
 composer require "jafaripur/varzesh3-crawler"
 ```
 ## Usage
-After installing add this line in top of page:
+After installing add this line in top of page
 ```php
 use jafaripur\varzesh3\Varzesh3Crawler;
 ```
@@ -14,17 +14,21 @@ And create new instance from `Varzesh3Crawler`
 ```php
 $crawler = new Varzesh3Crawler();
 ```
-If you want to add fetching url use this one:
+If you want to add fetching url use this one
 ```php
 $crawler = new Varzesh3Crawler('http://www.varzesh3.com/livescore');
 ```
 ### Livescore
-Fetching livescore:
+Fetching livescore for football
 ```php
 $crawler = new Varzesh3Crawler();
+$data = $crawler->getFootballLiveScore();
+```
+for fetch all available sport like an footbal, volleyball,...
+```php
 $data = $crawler->getLiveScore();
 ```
-The structure of `$data` variable similar to this one:
+The structure of `$data` variable similar to this one for football score:
 ```
 (
     [start_time] => start time

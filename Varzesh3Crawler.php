@@ -14,12 +14,23 @@ use Symfony\Component\DomCrawler\Crawler;
  * 
  */
 class Varzesh3Crawler {
+    
+    const FOOTBALL = 0;
+    const BOLLEYBALL = 2;
+    const BASKETBALL = 3;
+    
 
     /**
      * url of target for fetching
      * @var string
      */
     public $targetUrl;
+    
+    /**
+     *
+     * @var Crawler[]
+     */
+    private $crawler = null;
 
     /**
      * 
@@ -33,6 +44,21 @@ class Varzesh3Crawler {
 
         $this->targetUrl = $targetUrl;
     }
+    
+    /**
+     * get instance of Crawler object for each url want to crawl
+     * 
+     * @return Crawler
+     */
+    public function &getCrawler()
+    {
+        if (!isset($this->crawler[$this->targetUrl]))
+        {
+            $this->crawler[$this->targetUrl] = (new Client())->request('GET', $this->targetUrl);
+        }
+        
+        return $this->crawler[$this->targetUrl];
+    }
 
     /**
      * Fetch livescore from given page.
@@ -41,12 +67,24 @@ class Varzesh3Crawler {
      */
     public function getLiveScore() {
 
-        $client = new Client();
-
-        $crawler = $client->request('GET', $this->targetUrl);
-
         $data = [];
-        $crawler->filter('.stage-wrapper')->each(function (Crawler $node) use (&$data) {
+        $data['football'] = $this->getFootballLiveScore();
+        
+        return $data;
+    }
+    
+    /**
+     * fetch livescore data for football
+     * 
+     * @return array
+     */
+    public function getFootballLiveScore()
+    {
+        
+        $crawler = $this->getCrawler();
+        
+        $data = [];
+        $crawler->filter('.stage-wrapper.sport' . self::FOOTBALL)->each(function (Crawler $node) use (&$data) {
             $tempData = [];
             $stageName = $node->filter('.stage-name')->text();
 
