@@ -1,0 +1,20 @@
+{
+    "name": "jafaripur/varzesh3-crawler",
+    "description": "Crawler for varzesh3.com livescore",
+    "keywords": ["crawler", "live score craler", "footbal crawler", "varzesh3.com live score crawler"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Araz Jafaripur",
+            "email": "mjafaripur@yahoo.com"
+        }
+    ],
+    "require": {
+        "fabpot/goutte": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "jafaripur\\varzesh3\\": ""
+        }
+    }
+}
