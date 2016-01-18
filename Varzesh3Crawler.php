@@ -16,8 +16,7 @@ use Symfony\Component\DomCrawler\Crawler;
 class Varzesh3Crawler {
     
     const FOOTBALL = 0;
-    const BOLLEYBALL = 2;
-    const BASKETBALL = 3;
+    const VOLLEYBALL = 2;
     
 
     /**
@@ -66,11 +65,12 @@ class Varzesh3Crawler {
      * @return array
      */
     public function getLiveScore() {
-
-        $data = [];
-        $data['football'] = $this->getFootballLiveScore();
         
-        return $data;
+        return [
+            'football' => $this->getFootballLiveScore(),
+            'volleyball' => $this->getVolleybalballLiveScore(),
+        ];
+        
     }
     
     /**
@@ -111,6 +111,51 @@ class Varzesh3Crawler {
                         'player' => trim($node->filter('span')->text())
                     ];
                 });
+                $data[$stageName][] = $tempData;
+            });
+        });
+
+        return $data;
+    }
+    
+    /**
+     * fetch livescore data for basketball
+     * 
+     * @return array
+     */
+    public function getVolleybalballLiveScore()
+    {
+        
+        $crawler = $this->getCrawler();
+        $data = [];
+        $crawler->filter('.stage-wrapper.sport' . self::VOLLEYBALL)->each(function (Crawler $node) use (&$data) {
+            $tempData = [];
+            $stageName = $node->filter('.stage-name')->text();
+
+            $node->filter('.match-row')->each(function (Crawler $node) use (&$data, &$tempData, $stageName) {
+
+                $tempData['start_time'] = trim($node->filter('.start-time')->text());
+                $tempData['start_date'] = trim($node->filter('.start-date')->text());
+                $tempData['match_status'] = trim($node->filter('.match-status')->text());
+                $tempData['team_right'] = [
+                    'name' => trim($node->filter('.team-names .left-align-name')->last()->text()),
+                    'score' => [],
+                ];
+                $node->filter('.team-names .scores-container .vertical-half.bottom div')->each(function(Crawler $node, $index) use (&$tempData){
+                    $scoreSet = ($index == 0 ? 'total' : $index);
+                    $tempData['team_right']['score'][$scoreSet] = trim($node->text());
+                });
+                
+                
+                $tempData['team_left'] = [
+                    'name' => trim($node->filter('.team-names .left-align-name')->first()->text()),
+                    'score' => []
+                ];
+                $node->filter('.team-names .scores-container .vertical-half.top div')->each(function(Crawler $node, $index) use (&$tempData){
+                    $scoreSet = ($index == 0 ? 'total' : $index);
+                    $tempData['team_left']['score'][$scoreSet] = trim($node->text());
+                });
+                
                 $data[$stageName][] = $tempData;
             });
         });
