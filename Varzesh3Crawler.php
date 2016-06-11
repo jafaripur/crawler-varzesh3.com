@@ -178,6 +178,10 @@ class Varzesh3Crawler {
             'event-5' => 'no_goal',
             'event-6' => 'penalty',
             'event-7' => 'goal_own',
+            'event-8' => 'nemidonam',
+            'event-9' => 'in_change',
+            'event-10' => 'out_change',
+
         ];
         
         foreach ($eventList as $key => $value) {
